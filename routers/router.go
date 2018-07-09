@@ -8,7 +8,7 @@
 package routers
 
 import (
-	"myproject/controllers"
+	"zw/controllers"
 
 	"github.com/astaxie/beego"
 )
@@ -49,4 +49,5 @@ func init() {
 	beego.AddNamespace(ns)
 	beego.Router("/wxaccesstoken", &controllers.WXAccessTokenController{})
 	beego.Router("/wx", &controllers.WXController{})
+	beego.Router("/wxmini", &controllers.WXMiniController{})
 }

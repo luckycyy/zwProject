@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"fmt"
 	"io/ioutil"
-	"myproject/constant"
+	"zw/constant"
 )
 
 func GetWXAccessToken() string{

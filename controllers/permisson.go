@@ -3,11 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"myproject/models"
 	"strconv"
 	"strings"
-
 	"github.com/astaxie/beego"
+	"zw/models"
 )
 
 // PermissonController operations for Permisson
