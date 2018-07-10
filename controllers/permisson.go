@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"github.com/astaxie/beego"
-	"zw/models"
+	"zwProject/models"
 )
 
 // PermissonController operations for Permisson

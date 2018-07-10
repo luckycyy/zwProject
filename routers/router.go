@@ -8,7 +8,7 @@
 package routers
 
 import (
-	"zw/controllers"
+	"zwProject/controllers"
 
 	"github.com/astaxie/beego"
 )

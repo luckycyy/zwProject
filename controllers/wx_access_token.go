@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"zw/wx"
+	"zwProject/wx"
 )
 
 type WXAccessTokenController struct {

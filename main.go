@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "zw/routers"
+	_ "zwProject/routers"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
