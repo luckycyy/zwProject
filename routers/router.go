@@ -49,5 +49,5 @@ func init() {
 	beego.AddNamespace(ns)
 	beego.Router("/wxaccesstoken", &controllers.WXAccessTokenController{})
 	beego.Router("/wx", &controllers.WXController{})
-	beego.Router("/wxmini", &controllers.WXMiniController{})
+	beego.Router("/wxmini/login", &controllers.WXMiniLoginController{})
 }
