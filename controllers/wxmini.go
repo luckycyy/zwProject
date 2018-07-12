@@ -6,6 +6,7 @@ import (
 	"zwProject/common"
 	"io/ioutil"
 	"net/http"
+	"encoding/json"
 )
 
 type WXMiniLoginController struct {
@@ -13,10 +14,15 @@ type WXMiniLoginController struct {
 }
 func (c *WXMiniLoginController) Get() {
 	code:=c.GetString("code")
-	fmt.Println("code1 is :"+code)
+	fmt.Println("code is :"+code)
+	if code == ""{
+		fmt.Println("get code err")
+		return
+	}
 	resp, err := http.Get("https://api.weixin.qq.com/sns/jscode2session?appid=wxfe7815dd10b97a64&secret=242a3a1bbb058c3d95efcd14445dccac&js_code="+code+"&grant_type=authorization_code")
 	if err != nil {
-		// handle error
+		fmt.Println("get openid err")
+		fmt.Println(err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -24,8 +30,13 @@ func (c *WXMiniLoginController) Get() {
 	if err != nil {
 		// handle error
 	}
+	var respObj LoginResponseBody
+	json.Unmarshal(body,&respObj)
 
-	fmt.Println("resp:"+string(body))
+	beego.BeeLogger.Info("openid:"+respObj.Openid)
+
+	//判断openid是否在user库里，如果不在显示申请角色，在的话显示菜单
+
 }
 func (c *WXMiniLoginController) Post() {
 	var codebody CodeBody
@@ -37,4 +48,8 @@ func (c *WXMiniLoginController) Post() {
 
 type CodeBody struct {
 	Code string
+}
+type LoginResponseBody struct {
+	Session_key string
+	Openid string
 }
