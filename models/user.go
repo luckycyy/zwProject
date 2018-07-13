@@ -11,7 +11,8 @@ import (
 )
 
 type User struct {
-	Id         int       `orm:"column(user_id);pk"`
+	Id         int       `orm:"column(user_id);auto"`
+	Openid     string    `orm:"column(openid);size(32);null"`
 	Username   string    `orm:"column(username);size(32)"`
 	Password   string    `orm:"column(password);size(32);null"`
 	Age        int       `orm:"column(age);null"`

@@ -7,6 +7,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"encoding/json"
+	"zwProject/models"
+	"zwProject/db"
+	"github.com/astaxie/beego/orm"
 )
 
 type WXMiniLoginController struct {
@@ -36,7 +39,15 @@ func (c *WXMiniLoginController) Get() {
 	beego.BeeLogger.Info("openid:"+respObj.Openid)
 
 	//判断openid是否在user库里，如果不在显示申请角色，在的话显示菜单
-
+	user:=models.User{Openid:respObj.Openid}
+	err = db.GetOrm().Read(&user,"openid")
+	if err == orm.ErrNoRows {
+		fmt.Println("查询不到")
+	} else if err == orm.ErrMissPK {
+		fmt.Println("找不到主键")
+	} else {
+		fmt.Println(user.Id)
+	}
 }
 func (c *WXMiniLoginController) Post() {
 	var codebody CodeBody
