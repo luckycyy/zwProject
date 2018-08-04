@@ -50,4 +50,5 @@ func init() {
 	beego.Router("/wxaccesstoken", &controllers.WXAccessTokenController{})
 	beego.Router("/wx", &controllers.WXController{})
 	beego.Router("/wxmini/login", &controllers.WXMiniLoginController{})
+	beego.Router("/wxmini/register", &controllers.WXMiniLoginController{})
 }

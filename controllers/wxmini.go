@@ -10,9 +10,13 @@ import (
 	"zwProject/models"
 	"zwProject/db"
 	"github.com/astaxie/beego/orm"
+	"strconv"
 )
 
 type WXMiniLoginController struct {
+	beego.Controller
+}
+type WXMiniRegisterController struct {
 	beego.Controller
 }
 func (c *WXMiniLoginController) Get() {
@@ -43,10 +47,27 @@ func (c *WXMiniLoginController) Get() {
 	err = db.GetOrm().Read(&user,"openid")
 	if err == orm.ErrNoRows {
 		fmt.Println("查询不到")
+		//TODO 申请角色，写入角色申请表
+		//c.Ctx.WriteString("haha")
+		c.Data["json"] = &CodeBody{"0"}
+		c.ServeJSON()
 	} else if err == orm.ErrMissPK {
 		fmt.Println("找不到主键")
 	} else {
-		fmt.Println(user.Id)
+		fmt.Println(user)
+		fmt.Println("查询到用户"+strconv.Itoa(user.Id))
+
+
+		//更新数据库中昵称，头像地址
+		nickName:=c.GetString("nickName")
+		avatarUrl:=c.GetString("avatarUrl")
+		user.Username = nickName
+		user.AvatarUrl = avatarUrl
+
+		if num, err := db.GetOrm().Update(&user); err == nil {
+			fmt.Println("更新昵和地址,影响行数:"+strconv.Itoa(int(num)))
+		}
+		//TODO 显示菜单
 	}
 }
 func (c *WXMiniLoginController) Post() {
@@ -57,6 +78,15 @@ func (c *WXMiniLoginController) Post() {
 
 }
 
+func (c *WXMiniRegisterController) Post() {
+	var codebody CodeBody
+	common.ProcJsonRequest(c.Ctx.ResponseWriter.ResponseWriter,c.Ctx.Request,&codebody)
+	fmt.Print("code:"+codebody.Code)
+
+
+}
+
+
 type CodeBody struct {
 	Code string
 }
@@ -64,3 +94,5 @@ type LoginResponseBody struct {
 	Session_key string
 	Openid string
 }
+
+

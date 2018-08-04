@@ -14,6 +14,7 @@ type User struct {
 	Id         int       `orm:"column(user_id);auto"`
 	Openid     string    `orm:"column(openid);size(32);null"`
 	Username   string    `orm:"column(username);size(32)"`
+	AvatarUrl  string    `orm:"column(avatar_url);size(512);null"`
 	Password   string    `orm:"column(password);size(32);null"`
 	Age        int       `orm:"column(age);null"`
 	Tel        string    `orm:"column(tel);size(32);null"`

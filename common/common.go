@@ -11,3 +11,7 @@ func ProcJsonRequest(resp http.ResponseWriter, req *http.Request,objPtr interfac
 	body, _ := ioutil.ReadAll(req.Body)
 	json.Unmarshal(body, objPtr)
 }
+//func ProcJsonRespose(resp http.ResponseWriter, req *http.Request,objPtr interface{}) {
+//	body, _ := ioutil.ReadAll(req.Body)
+//	json.Marshal("")
+//}
