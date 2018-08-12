@@ -5,50 +5,56 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 )
 
-type RolePermisson struct {
-	Id          int    `orm:"column(role_permisson_id);pk"`
-	RoleId      string `orm:"column(role_id);size(32)"`
-	PermissonId string `orm:"column(permisson_id);size(32)"`
-	Describe    string `orm:"column(describe);size(128);null"`
+type Apply struct {
+	Id         int       `orm:"column(apply_id);auto"`
+	Openid     string    `orm:"column(openid);size(32)"`
+	Username   string    `orm:"column(username);size(32);null"`
+	Tel        string    `orm:"column(tel);size(32);null"`
+	Company    string    `orm:"column(company);size(128);null"`
+	Status     int       `orm:"column(status);null"`
+	Operator   string    `orm:"column(operator);size(32);null"`
+	CreateTime time.Time `orm:"column(create_time);type(datetime);null;auto_now_add"`
+	UpdateTime time.Time `orm:"column(update_time);type(datetime);null"`
 }
 
-func (t *RolePermisson) TableName() string {
-	return "role_permisson"
+func (t *Apply) TableName() string {
+	return "apply"
 }
 
 func init() {
-	orm.RegisterModel(new(RolePermisson))
+	orm.RegisterModel(new(Apply))
 }
 
-// AddRolePermisson insert a new RolePermisson into database and returns
+// AddApply insert a new Apply into database and returns
 // last inserted Id on success.
-func AddRolePermisson(m *RolePermisson) (id int64, err error) {
+func AddApply(m *Apply) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetRolePermissonById retrieves RolePermisson by Id. Returns error if
+// GetApplyById retrieves Apply by Id. Returns error if
 // Id doesn't exist
-func GetRolePermissonById(id int) (v *RolePermisson, err error) {
+func GetApplyById(id int) (v *Apply, err error) {
 	o := orm.NewOrm()
-	v = &RolePermisson{Id: id}
+	v = &Apply{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
-// GetAllRolePermisson retrieves all RolePermisson matches certain condition. Returns empty list if
+// GetAllApply retrieves all Apply matches certain condition. Returns empty list if
 // no records exist
-func GetAllRolePermisson(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllApply(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(RolePermisson))
+	qs := o.QueryTable(new(Apply))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -98,7 +104,7 @@ func GetAllRolePermisson(query map[string]string, fields []string, sortby []stri
 		}
 	}
 
-	var l []RolePermisson
+	var l []Apply
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -121,11 +127,12 @@ func GetAllRolePermisson(query map[string]string, fields []string, sortby []stri
 	return nil, err
 }
 
-// UpdateRolePermisson updates RolePermisson by Id and returns error if
-// the record to be updated doesn't exist
-func UpdateRolePermissonById(m *RolePermisson) (err error) {
+// UpdateApply updates Apply by Id and returns error if
+// the record to be updapply.go
+//user.goated doesn't exist
+func UpdateApplyById(m *Apply) (err error) {
 	o := orm.NewOrm()
-	v := RolePermisson{Id: m.Id}
+	v := Apply{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -136,15 +143,15 @@ func UpdateRolePermissonById(m *RolePermisson) (err error) {
 	return
 }
 
-// DeleteRolePermisson deletes RolePermisson by Id and returns error if
+// DeleteApply deletes Apply by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteRolePermisson(id int) (err error) {
+func DeleteApply(id int) (err error) {
 	o := orm.NewOrm()
-	v := RolePermisson{Id: id}
+	v := Apply{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&RolePermisson{Id: id}); err == nil {
+		if num, err = o.Delete(&Apply{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

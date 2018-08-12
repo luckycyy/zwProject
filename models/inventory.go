@@ -5,49 +5,53 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 )
 
-type Permisson struct {
-	Id            int    `orm:"column(permisson_id);pk"`
-	PermissonName string `orm:"column(permisson_name);size(128)"`
-	Describe      string `orm:"column(describe);size(128);null"`
+type Inventory struct {
+	Id          int       `orm:"column(inventory_id);auto"`
+	ProductName string    `orm:"column(product_name);size(128);null"`
+	Station     string    `orm:"column(station);size(128);null"`
+	Num         float64   `orm:"column(num);null;digits(10);decimals(2)"`
+	CreateTime  time.Time `orm:"column(create_time);type(datetime);null;auto_now_add"`
+	UpdateTime  time.Time `orm:"column(update_time);type(datetime);null"`
 }
 
-func (t *Permisson) TableName() string {
-	return "permisson"
+func (t *Inventory) TableName() string {
+	return "inventory"
 }
 
 func init() {
-	orm.RegisterModel(new(Permisson))
+	orm.RegisterModel(new(Inventory))
 }
 
-// AddPermisson insert a new Permisson into database and returns
+// AddInventory insert a new Inventory into database and returns
 // last inserted Id on success.
-func AddPermisson(m *Permisson) (id int64, err error) {
+func AddInventory(m *Inventory) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetPermissonById retrieves Permisson by Id. Returns error if
+// GetInventoryById retrieves Inventory by Id. Returns error if
 // Id doesn't exist
-func GetPermissonById(id int) (v *Permisson, err error) {
+func GetInventoryById(id int) (v *Inventory, err error) {
 	o := orm.NewOrm()
-	v = &Permisson{Id: id}
+	v = &Inventory{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
-// GetAllPermisson retrieves all Permisson matches certain condition. Returns empty list if
+// GetAllInventory retrieves all Inventory matches certain condition. Returns empty list if
 // no records exist
-func GetAllPermisson(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllInventory(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Permisson))
+	qs := o.QueryTable(new(Inventory))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -97,7 +101,7 @@ func GetAllPermisson(query map[string]string, fields []string, sortby []string, 
 		}
 	}
 
-	var l []Permisson
+	var l []Inventory
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -120,11 +124,11 @@ func GetAllPermisson(query map[string]string, fields []string, sortby []string, 
 	return nil, err
 }
 
-// UpdatePermisson updates Permisson by Id and returns error if
+// UpdateInventory updates Inventory by Id and returns error if
 // the record to be updated doesn't exist
-func UpdatePermissonById(m *Permisson) (err error) {
+func UpdateInventoryById(m *Inventory) (err error) {
 	o := orm.NewOrm()
-	v := Permisson{Id: m.Id}
+	v := Inventory{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -135,15 +139,15 @@ func UpdatePermissonById(m *Permisson) (err error) {
 	return
 }
 
-// DeletePermisson deletes Permisson by Id and returns error if
+// DeleteInventory deletes Inventory by Id and returns error if
 // the record to be deleted doesn't exist
-func DeletePermisson(id int) (err error) {
+func DeleteInventory(id int) (err error) {
 	o := orm.NewOrm()
-	v := Permisson{Id: id}
+	v := Inventory{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Permisson{Id: id}); err == nil {
+		if num, err = o.Delete(&Inventory{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

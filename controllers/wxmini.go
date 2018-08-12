@@ -1,16 +1,17 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
+	"encoding/json"
 	"fmt"
-	"zwProject/common"
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 	"io/ioutil"
 	"net/http"
-	"encoding/json"
-	"zwProject/models"
-	"zwProject/db"
-	"github.com/astaxie/beego/orm"
 	"strconv"
+	"time"
+	"zwProject/common"
+	"zwProject/db"
+	"zwProject/models"
 )
 
 type WXMiniLoginController struct {
@@ -19,14 +20,24 @@ type WXMiniLoginController struct {
 type WXMiniRegisterController struct {
 	beego.Controller
 }
+type WXMiniLoadController struct {
+	beego.Controller
+}
+type WXMiniUnLoadController struct {
+	beego.Controller
+}
+type WXMiniPickerItemController struct {
+	beego.Controller
+}
+
 func (c *WXMiniLoginController) Get() {
-	code:=c.GetString("code")
-	fmt.Println("code is :"+code)
-	if code == ""{
+	code := c.GetString("code")
+	fmt.Println("code is :" + code)
+	if code == "" {
 		fmt.Println("get code err")
 		return
 	}
-	resp, err := http.Get("https://api.weixin.qq.com/sns/jscode2session?appid=wxfe7815dd10b97a64&secret=242a3a1bbb058c3d95efcd14445dccac&js_code="+code+"&grant_type=authorization_code")
+	resp, err := http.Get("https://api.weixin.qq.com/sns/jscode2session?appid=wxfe7815dd10b97a64&secret=242a3a1bbb058c3d95efcd14445dccac&js_code=" + code + "&grant_type=authorization_code")
 	if err != nil {
 		fmt.Println("get openid err")
 		fmt.Println(err)
@@ -38,61 +49,191 @@ func (c *WXMiniLoginController) Get() {
 		// handle error
 	}
 	var respObj LoginResponseBody
-	json.Unmarshal(body,&respObj)
+	json.Unmarshal(body, &respObj)
 
-	beego.BeeLogger.Info("openid:"+respObj.Openid)
+	beego.BeeLogger.Info("openid:" + respObj.Openid)
 
 	//判断openid是否在user库里，如果不在显示申请角色，在的话显示菜单
-	user:=models.User{Openid:respObj.Openid}
-	err = db.GetOrm().Read(&user,"openid")
+	//user:=models.User{Openid:respObj.Openid}
+	//err = db.GetOrm().Read(&user,"openid")
+	user := models.User{}
+	err = db.GetOrm().QueryTable("user").Filter("openid", respObj.Openid).One(&user)
+	if err == orm.ErrMultiRows {
+		// 多条的时候报错
+		fmt.Printf("返回多个user不是一个")
+	}
+
 	if err == orm.ErrNoRows {
-		fmt.Println("查询不到")
-		//TODO 申请角色，写入角色申请表
-		//c.Ctx.WriteString("haha")
-		c.Data["json"] = &CodeBody{"0"}
+		fmt.Println("user中查询不到")
+
+		apply := models.Apply{Openid: respObj.Openid}
+		err = db.GetOrm().Read(&apply, "openid")
+
+		var role string
+		if err == orm.ErrNoRows {
+			role = "unregister"
+		} else {
+			role = "待审核"
+		}
+
+		c.Data["json"] = &LoginResult{respObj.Openid, role, "",""}
 		c.ServeJSON()
+		return
 	} else if err == orm.ErrMissPK {
 		fmt.Println("找不到主键")
+		return
 	} else {
 		fmt.Println(user)
-		fmt.Println("查询到用户"+strconv.Itoa(user.Id))
-
+		fmt.Println("查询到用户" + strconv.Itoa(user.Id))
 
 		//更新数据库中昵称，头像地址
-		nickName:=c.GetString("nickName")
-		avatarUrl:=c.GetString("avatarUrl")
-		user.Username = nickName
+		nickName := c.GetString("nickName")
+		avatarUrl := c.GetString("avatarUrl")
+		user.Nickname = nickName
 		user.AvatarUrl = avatarUrl
 
-		if num, err := db.GetOrm().Update(&user); err == nil {
-			fmt.Println("更新昵和地址,影响行数:"+strconv.Itoa(int(num)))
+		if num, err := db.GetOrm().Update(&user, "nickname", "avatar_url"); err == nil {
+			fmt.Println("更新昵和地址,影响行数:" + strconv.Itoa(int(num)))
 		}
-		//TODO 显示菜单
+		//查询picker条目
+		pickerItemsJsonStr,err:=json.Marshal(getPickerItems())
+		if err!=nil{
+			fmt.Println(err)
+		}
+		fmt.Println(pickerItemsJsonStr)
+		c.Data["json"] = &LoginResult{respObj.Openid, user.Role, user.Username,string(pickerItemsJsonStr)}
+		c.ServeJSON()
 	}
 }
 func (c *WXMiniLoginController) Post() {
 	var codebody CodeBody
-	common.ProcJsonRequest(c.Ctx.ResponseWriter.ResponseWriter,c.Ctx.Request,&codebody)
-	fmt.Print("code:"+codebody.Code)
-
+	common.ProcJsonRequest(c.Ctx.ResponseWriter.ResponseWriter, c.Ctx.Request, &codebody)
+	fmt.Print("cod1e:" + codebody.Code)
 
 }
 
 func (c *WXMiniRegisterController) Post() {
-	var codebody CodeBody
-	common.ProcJsonRequest(c.Ctx.ResponseWriter.ResponseWriter,c.Ctx.Request,&codebody)
-	fmt.Print("code:"+codebody.Code)
+	var apply models.Apply
+	//err:=json.Unmarshal(c.Ctx.Input.RequestBody, &apply)
+	err := c.ParseForm(&apply)
+	if err != nil {
+		fmt.Println("parseForm err,", err)
+		return
+	}
+	apply.CreateTime = time.Now().UTC()
+	applyId, err := models.AddApply(&apply)
+	fmt.Println("apply：", apply)
+	fmt.Println("applyId：", applyId)
+	if err != nil {
+		fmt.Println("addApply err,", err)
+		return
+	}
 
+	c.Data["json"] = &CodeBody{"1"}
+	c.ServeJSON()
 
 }
 
+func (c *WXMiniLoadController) Post() {
+	var loadRecord models.LoadRecord
+	//err:=json.Unmarshal(c.Ctx.Input.RequestBody, &apply)
+	err := c.ParseForm(&loadRecord)
+	if err != nil {
+		fmt.Println("parseForm err,", err)
+		return
+	}
+	loadRecord.CreateTime = time.Now().UTC()
+	loadRecordId, err := models.AddLoadRecord(&loadRecord)
+	fmt.Println("loadRecord：", loadRecord)
+	fmt.Println("loadRecordId：", loadRecordId)
+	if err != nil {
+		fmt.Println("addloadRecord err,", err)
+		return
+	}
+
+	//扣减库存
+	res, err := db.GetOrm().Raw("UPDATE inventory SET num = num - ? WHERE product_name = ? AND station = ?", loadRecord.Num, loadRecord.ProductName, loadRecord.Station).Exec()
+	if err == nil {
+		num, _ := res.RowsAffected()
+		fmt.Println("update minus inventory affected nums: ", num)
+	}
+	//TODO 修改为原生语句 或者存入整型
+	//num, err := db.GetOrm().QueryTable("inventory").Filter("product_name",loadRecord.ProductName).Filter("station",loadRecord.Station).Update(orm.Params{
+	//	"num": orm.ColValue(orm.ColMinus, loadRecord.Num),
+	//})
+	//fmt.Println("影响num：", num)
+	c.Data["json"] = &CodeBody{"1"}
+	c.ServeJSON()
+
+}
+func (c *WXMiniUnLoadController) Put() {
+
+	record := models.LoadRecord{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &record)
+
+	if err != nil {
+		fmt.Println("Unmarshal err,", err)
+		return
+	}
+
+	fmt.Println(record)
+	if record.Location2 != "" {
+		fmt.Println("jr location2")
+		if num, err := db.GetOrm().Update(&record, "location2"); err == nil {
+			fmt.Println("recordID:" + strconv.Itoa(record.Id) + "更新卸车位置" + record.Location2 + ",影响行数:" + strconv.Itoa(int(num)))
+		}
+	} else {
+		fmt.Println("jr else")
+		if num, err := db.GetOrm().Update(&record, "is_unload"); err == nil {
+			fmt.Println("recordID:" + strconv.Itoa(record.Id) + "更新卸车,影响行数:" + strconv.Itoa(int(num)))
+		}
+	}
+
+	c.Data["json"] = &CodeBody{"OK"}
+	c.ServeJSON()
+}
+
+func (c *WXMiniPickerItemController) Get() {
+	value := c.GetString("key")
+	fmt.Println("key is :" + value)
+	if value == "" {
+		fmt.Println("get key err")
+		return
+	}
+
+	rs := getPickerItems()
+	c.Data["json"] = rs
+	c.ServeJSON()
+
+}
+
+func getPickerItems() []interface{} {
+	var products orm.ParamsList
+	var stations orm.ParamsList
+	num, err := db.GetOrm().Raw("SELECT '请选择产品名称' UNION SELECT DISTINCT product_name FROM inventory").ValuesFlat(&products)
+	if err == nil && num > 0 {
+		fmt.Println(products) // []{"1","2","3",...}
+	}
+	num, err = db.GetOrm().Raw("SELECT '请选择装车站点' UNION SELECT DISTINCT station FROM inventory").ValuesFlat(&stations)
+	if err == nil && num > 0 {
+		fmt.Println(stations) // []{"1","2","3",...}
+	}
+	rs := make([]interface{}, 2)
+	rs[0] = products
+	rs[1] = stations
+	return rs
+}
 
 type CodeBody struct {
 	Code string
 }
+type LoginResult struct {
+	Openid   string
+	Role     string
+	Username string
+	PickerItems string
+}
 type LoginResponseBody struct {
 	Session_key string
-	Openid string
+	Openid      string
 }
-
-

@@ -5,49 +5,56 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 )
 
-type Role struct {
-	Id       int    `orm:"column(role_id);pk"`
-	RoleName string `orm:"column(role_name);size(32)"`
-	Describe string `orm:"column(describe);size(128);null"`
+type LoadRecord struct {
+	Id          int       `orm:"column(load_record_id);auto"`
+	ProductName string    `orm:"column(product_name);size(128);null"`
+	Num         float64   `orm:"column(num);null;digits(10);decimals(2)"`
+	Station     string    `orm:"column(station);size(255);null"`
+	Location    string    `orm:"column(location);size(255);null"`
+	CreateTime  time.Time `orm:"column(create_time);type(datetime);null;auto_now_add"`
+	Creator     string    `orm:"column(creator);size(128);null"`
+	IsUnload    int       `orm:"column(is_unload);null"`
+	Location2   string    `orm:"column(location2);size(255);null"`
 }
 
-func (t *Role) TableName() string {
-	return "role"
+func (t *LoadRecord) TableName() string {
+	return "load_record"
 }
 
 func init() {
-	orm.RegisterModel(new(Role))
+	orm.RegisterModel(new(LoadRecord))
 }
 
-// AddRole insert a new Role into database and returns
+// AddLoadRecord insert a new LoadRecord into database and returns
 // last inserted Id on success.
-func AddRole(m *Role) (id int64, err error) {
+func AddLoadRecord(m *LoadRecord) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetRoleById retrieves Role by Id. Returns error if
+// GetLoadRecordById retrieves LoadRecord by Id. Returns error if
 // Id doesn't exist
-func GetRoleById(id int) (v *Role, err error) {
+func GetLoadRecordById(id int) (v *LoadRecord, err error) {
 	o := orm.NewOrm()
-	v = &Role{Id: id}
+	v = &LoadRecord{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
-// GetAllRole retrieves all Role matches certain condition. Returns empty list if
+// GetAllLoadRecord retrieves all LoadRecord matches certain condition. Returns empty list if
 // no records exist
-func GetAllRole(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllLoadRecord(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Role))
+	qs := o.QueryTable(new(LoadRecord))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -97,7 +104,7 @@ func GetAllRole(query map[string]string, fields []string, sortby []string, order
 		}
 	}
 
-	var l []Role
+	var l []LoadRecord
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -120,11 +127,11 @@ func GetAllRole(query map[string]string, fields []string, sortby []string, order
 	return nil, err
 }
 
-// UpdateRole updates Role by Id and returns error if
+// UpdateLoadRecord updates LoadRecord by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateRoleById(m *Role) (err error) {
+func UpdateLoadRecordById(m *LoadRecord) (err error) {
 	o := orm.NewOrm()
-	v := Role{Id: m.Id}
+	v := LoadRecord{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -135,15 +142,15 @@ func UpdateRoleById(m *Role) (err error) {
 	return
 }
 
-// DeleteRole deletes Role by Id and returns error if
+// DeleteLoadRecord deletes LoadRecord by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteRole(id int) (err error) {
+func DeleteLoadRecord(id int) (err error) {
 	o := orm.NewOrm()
-	v := Role{Id: id}
+	v := LoadRecord{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Role{Id: id}); err == nil {
+		if num, err = o.Delete(&LoadRecord{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

@@ -3,20 +3,19 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"zwProject/models"
 	"strconv"
 	"strings"
-
 	"github.com/astaxie/beego"
+	"zwProject/models"
 )
 
-// RoleController operations for Role
-type RoleController struct {
+// ApplyController operations for Apply
+type ApplyController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *RoleController) URLMapping() {
+func (c *ApplyController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -26,15 +25,15 @@ func (c *RoleController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create Role
-// @Param	body		body 	models.Role	true		"body for Role content"
-// @Success 201 {int} models.Role
+// @Description create Apply
+// @Param	body		body 	models.Apply	true		"body for Apply content"
+// @Success 201 {int} models.Apply
 // @Failure 403 body is empty
 // @router / [post]
-func (c *RoleController) Post() {
-	var v models.Role
+func (c *ApplyController) Post() {
+	var v models.Apply
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddRole(&v); err == nil {
+		if _, err := models.AddApply(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -48,15 +47,15 @@ func (c *RoleController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Role by id
+// @Description get Apply by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Role
+// @Success 200 {object} models.Apply
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *RoleController) GetOne() {
+func (c *ApplyController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetRoleById(id)
+	v, err := models.GetApplyById(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -67,17 +66,17 @@ func (c *RoleController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get Role
+// @Description get Apply
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.Role
+// @Success 200 {object} models.Apply
 // @Failure 403
 // @router / [get]
-func (c *RoleController) GetAll() {
+func (c *ApplyController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -119,7 +118,7 @@ func (c *RoleController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllRole(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllApply(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -130,18 +129,18 @@ func (c *RoleController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the Role
+// @Description update the Apply
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Role	true		"body for Role content"
-// @Success 200 {object} models.Role
+// @Param	body		body 	models.Apply	true		"body for Apply content"
+// @Success 200 {object} models.Apply
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *RoleController) Put() {
+func (c *ApplyController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.Role{Id: id}
+	v := models.Apply{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateRoleById(&v); err == nil {
+		if err := models.UpdateApplyById(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
@@ -154,15 +153,15 @@ func (c *RoleController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the Role
+// @Description delete the Apply
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *RoleController) Delete() {
+func (c *ApplyController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteRole(id); err == nil {
+	if err := models.DeleteApply(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()

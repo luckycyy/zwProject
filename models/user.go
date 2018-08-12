@@ -11,17 +11,19 @@ import (
 )
 
 type User struct {
-	Id         int       `orm:"column(user_id);auto"`
+	Id         int       `orm:"column(user_id);pk"`
 	Openid     string    `orm:"column(openid);size(32);null"`
-	Username   string    `orm:"column(username);size(32)"`
-	AvatarUrl  string    `orm:"column(avatar_url);size(512);null"`
+	Username   string    `orm:"column(username);size(128)"`
+	AvatarUrl  string    `orm:"column(avatar_url);size(255);null"`
+	Role       string    `orm:"column(role);size(32);null"`
 	Password   string    `orm:"column(password);size(32);null"`
 	Age        int       `orm:"column(age);null"`
 	Tel        string    `orm:"column(tel);size(32);null"`
 	Company    string    `orm:"column(company);size(128);null"`
 	LastTime   time.Time `orm:"column(last_time);type(datetime);null"`
 	CreateTime time.Time `orm:"column(create_time);type(datetime);null"`
-	Describe   string    `orm:"column(describe);size(32);null"`
+	Describe   string    `orm:"column(describe);size(128);null"`
+	Nickname   string    `orm:"column(nickname);size(128);null"`
 }
 
 func (t *User) TableName() string {

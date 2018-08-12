@@ -16,21 +16,9 @@ import (
 func init() {
 	ns := beego.NewNamespace("/v1",
 
-		beego.NSNamespace("/permisson",
+		beego.NSNamespace("/apply",
 			beego.NSInclude(
-				&controllers.PermissonController{},
-			),
-		),
-
-		beego.NSNamespace("/role",
-			beego.NSInclude(
-				&controllers.RoleController{},
-			),
-		),
-
-		beego.NSNamespace("/role_permisson",
-			beego.NSInclude(
-				&controllers.RolePermissonController{},
+				&controllers.ApplyController{},
 			),
 		),
 
@@ -39,10 +27,14 @@ func init() {
 				&controllers.UserController{},
 			),
 		),
-
-		beego.NSNamespace("/user_role",
+		beego.NSNamespace("/load_record",
 			beego.NSInclude(
-				&controllers.UserRoleController{},
+				&controllers.LoadRecordController{},
+			),
+		),
+		beego.NSNamespace("/inventory",
+			beego.NSInclude(
+				&controllers.InventoryController{},
 			),
 		),
 	)
@@ -50,5 +42,8 @@ func init() {
 	beego.Router("/wxaccesstoken", &controllers.WXAccessTokenController{})
 	beego.Router("/wx", &controllers.WXController{})
 	beego.Router("/wxmini/login", &controllers.WXMiniLoginController{})
-	beego.Router("/wxmini/register", &controllers.WXMiniLoginController{})
+	beego.Router("/wxmini/register", &controllers.WXMiniRegisterController{})
+	beego.Router("/wxmini/load", &controllers.WXMiniLoadController{})
+	beego.Router("/wxmini/unload", &controllers.WXMiniUnLoadController{})
+	beego.Router("/wxmini/pickeritem", &controllers.WXMiniPickerItemController{})
 }

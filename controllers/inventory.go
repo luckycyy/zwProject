@@ -9,13 +9,13 @@ import (
 	"zwProject/models"
 )
 
-// PermissonController operations for Permisson
-type PermissonController struct {
+// InventoryController operations for Inventory
+type InventoryController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *PermissonController) URLMapping() {
+func (c *InventoryController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -25,15 +25,15 @@ func (c *PermissonController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create Permisson
-// @Param	body		body 	models.Permisson	true		"body for Permisson content"
-// @Success 201 {int} models.Permisson
+// @Description create Inventory
+// @Param	body		body 	models.Inventory	true		"body for Inventory content"
+// @Success 201 {int} models.Inventory
 // @Failure 403 body is empty
 // @router / [post]
-func (c *PermissonController) Post() {
-	var v models.Permisson
+func (c *InventoryController) Post() {
+	var v models.Inventory
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddPermisson(&v); err == nil {
+		if _, err := models.AddInventory(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -47,15 +47,15 @@ func (c *PermissonController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Permisson by id
+// @Description get Inventory by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Permisson
+// @Success 200 {object} models.Inventory
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *PermissonController) GetOne() {
+func (c *InventoryController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetPermissonById(id)
+	v, err := models.GetInventoryById(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -66,17 +66,17 @@ func (c *PermissonController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get Permisson
+// @Description get Inventory
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.Permisson
+// @Success 200 {object} models.Inventory
 // @Failure 403
 // @router / [get]
-func (c *PermissonController) GetAll() {
+func (c *InventoryController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -118,7 +118,7 @@ func (c *PermissonController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllPermisson(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllInventory(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -129,18 +129,18 @@ func (c *PermissonController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the Permisson
+// @Description update the Inventory
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Permisson	true		"body for Permisson content"
-// @Success 200 {object} models.Permisson
+// @Param	body		body 	models.Inventory	true		"body for Inventory content"
+// @Success 200 {object} models.Inventory
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *PermissonController) Put() {
+func (c *InventoryController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.Permisson{Id: id}
+	v := models.Inventory{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdatePermissonById(&v); err == nil {
+		if err := models.UpdateInventoryById(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
@@ -153,15 +153,15 @@ func (c *PermissonController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the Permisson
+// @Description delete the Inventory
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *PermissonController) Delete() {
+func (c *InventoryController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	if err := models.DeletePermisson(id); err == nil {
+	if err := models.DeleteInventory(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()

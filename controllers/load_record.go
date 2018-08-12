@@ -3,20 +3,20 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"zwProject/models"
 	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego"
+	"zwProject/models"
 )
 
-// RolePermissonController operations for RolePermisson
-type RolePermissonController struct {
+// LoadRecordController operations for LoadRecord
+type LoadRecordController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *RolePermissonController) URLMapping() {
+func (c *LoadRecordController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -26,15 +26,15 @@ func (c *RolePermissonController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create RolePermisson
-// @Param	body		body 	models.RolePermisson	true		"body for RolePermisson content"
-// @Success 201 {int} models.RolePermisson
+// @Description create LoadRecord
+// @Param	body		body 	models.LoadRecord	true		"body for LoadRecord content"
+// @Success 201 {int} models.LoadRecord
 // @Failure 403 body is empty
 // @router / [post]
-func (c *RolePermissonController) Post() {
-	var v models.RolePermisson
+func (c *LoadRecordController) Post() {
+	var v models.LoadRecord
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddRolePermisson(&v); err == nil {
+		if _, err := models.AddLoadRecord(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -48,15 +48,15 @@ func (c *RolePermissonController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get RolePermisson by id
+// @Description get LoadRecord by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.RolePermisson
+// @Success 200 {object} models.LoadRecord
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *RolePermissonController) GetOne() {
+func (c *LoadRecordController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetRolePermissonById(id)
+	v, err := models.GetLoadRecordById(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -67,17 +67,17 @@ func (c *RolePermissonController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get RolePermisson
+// @Description get LoadRecord
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.RolePermisson
+// @Success 200 {object} models.LoadRecord
 // @Failure 403
 // @router / [get]
-func (c *RolePermissonController) GetAll() {
+func (c *LoadRecordController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -119,7 +119,7 @@ func (c *RolePermissonController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllRolePermisson(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllLoadRecord(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -130,18 +130,18 @@ func (c *RolePermissonController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the RolePermisson
+// @Description update the LoadRecord
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.RolePermisson	true		"body for RolePermisson content"
-// @Success 200 {object} models.RolePermisson
+// @Param	body		body 	models.LoadRecord	true		"body for LoadRecord content"
+// @Success 200 {object} models.LoadRecord
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *RolePermissonController) Put() {
+func (c *LoadRecordController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.RolePermisson{Id: id}
+	v := models.LoadRecord{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateRolePermissonById(&v); err == nil {
+		if err := models.UpdateLoadRecordById(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
@@ -154,15 +154,15 @@ func (c *RolePermissonController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the RolePermisson
+// @Description delete the LoadRecord
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *RolePermissonController) Delete() {
+func (c *LoadRecordController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteRolePermisson(id); err == nil {
+	if err := models.DeleteLoadRecord(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()

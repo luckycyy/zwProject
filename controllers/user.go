@@ -3,11 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"zwProject/models"
 	"strconv"
 	"strings"
-
 	"github.com/astaxie/beego"
+	"zwProject/models"
 )
 
 // UserController operations for User
