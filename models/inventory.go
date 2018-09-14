@@ -14,7 +14,7 @@ type Inventory struct {
 	Id          int       `orm:"column(inventory_id);auto"`
 	ProductName string    `orm:"column(product_name);size(128);null"`
 	Station     string    `orm:"column(station);size(128);null"`
-	Num         float64   `orm:"column(num);null;digits(10);decimals(2)"`
+	Num         float64   `orm:"column(num);null;digits(10);decimals(2)" json:"num,string"`
 	CreateTime  time.Time `orm:"column(create_time);type(datetime);null;auto_now_add"`
 	UpdateTime  time.Time `orm:"column(update_time);type(datetime);null"`
 }
