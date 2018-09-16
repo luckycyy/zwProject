@@ -29,7 +29,65 @@ type WXMiniUnLoadController struct {
 type WXMiniPickerItemController struct {
 	beego.Controller
 }
+type WXMiniFilterLoadRecordController struct {
+	beego.Controller
+}
 
+func (c *WXMiniFilterLoadRecordController) Get() {
+	startDate := c.GetString("startDate")
+	endDate := c.GetString("endDate")
+	strEndDate := endDate
+	describe := c.GetString("describe")
+	driver := c.GetString("driver")
+	station := c.GetString("station")
+	productName := c.GetString("productName")
+
+	t, _ := time.Parse("2006-01-02", endDate)
+	t = t.AddDate(0, 0, 1) //end日期 加一天，防止选不出当天的
+	endDate = t.Format("2006-01-02")
+
+	//var lists []orm.ParamsList
+
+	var loadRecord []*models.LoadRecord
+
+	qs := db.GetOrm().QueryTable("load_record")
+	if ("" != startDate) && ("0000-00-00" != strEndDate) {
+		qs = qs.Filter("create_time__gte", startDate)
+		fmt.Println("s")
+	}
+	if ("" != endDate) && ("0000-00-00" != strEndDate) {
+		qs = qs.Filter("create_time__lte", endDate)
+		fmt.Println("e")
+	}
+
+	if "" != describe {
+		qs = qs.Filter("station", describe)
+	}
+	if "" != driver {
+		qs = qs.Filter("creator", driver)
+	}
+	if "" != station {
+		qs = qs.Filter("station", station)
+	}
+	if "" != productName {
+		qs = qs.Filter("product_name", productName)
+	}
+
+	num, err := qs.All(&loadRecord)
+	fmt.Printf("Returned Rows Num: %s, %s", num, err)
+	/*
+	num, err := qs.ValuesList(&lists)
+	if err == nil {
+		fmt.Printf("Result Nums: %d\n", num)
+		for _, row := range lists {
+			fmt.Println(row)
+		}
+	}*/
+
+	c.Data["json"] = loadRecord
+	c.ServeJSON()
+
+}
 func (c *WXMiniLoginController) Get() {
 	code := c.GetString("code")
 	fmt.Println("code is :" + code)
@@ -76,7 +134,7 @@ func (c *WXMiniLoginController) Get() {
 			role = "待审核"
 		}
 
-		c.Data["json"] = &LoginResult{respObj.Openid, role, "",""}
+		c.Data["json"] = &LoginResult{respObj.Openid, role, "", ""}
 		c.ServeJSON()
 		return
 	} else if err == orm.ErrMissPK {
@@ -96,12 +154,12 @@ func (c *WXMiniLoginController) Get() {
 			fmt.Println("更新昵和地址,影响行数:" + strconv.Itoa(int(num)))
 		}
 		//查询picker条目
-		pickerItemsJsonStr,err:=json.Marshal(getPickerItems())
-		if err!=nil{
+		pickerItemsJsonStr, err := json.Marshal(getPickerItems())
+		if err != nil {
 			fmt.Println(err)
 		}
 		fmt.Println(pickerItemsJsonStr)
-		c.Data["json"] = &LoginResult{respObj.Openid, user.Role, user.Username,string(pickerItemsJsonStr)}
+		c.Data["json"] = &LoginResult{respObj.Openid, user.Role, user.Username, string(pickerItemsJsonStr)}
 		c.ServeJSON()
 	}
 }
@@ -228,9 +286,9 @@ type CodeBody struct {
 	Code string
 }
 type LoginResult struct {
-	Openid   string
-	Role     string
-	Username string
+	Openid      string
+	Role        string
+	Username    string
 	PickerItems string
 }
 type LoginResponseBody struct {

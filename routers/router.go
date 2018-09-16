@@ -46,4 +46,5 @@ func init() {
 	beego.Router("/wxmini/load", &controllers.WXMiniLoadController{})
 	beego.Router("/wxmini/unload", &controllers.WXMiniUnLoadController{})
 	beego.Router("/wxmini/pickeritem", &controllers.WXMiniPickerItemController{})
+	beego.Router("/wxmini/filter_load_record", &controllers.WXMiniFilterLoadRecordController{})
 }

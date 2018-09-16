@@ -13,7 +13,7 @@ import (
 type LoadRecord struct {
 	Id          int       `orm:"column(load_record_id);auto"`
 	ProductName string    `orm:"column(product_name);size(128);null"`
-	Num         float64   `orm:"column(num);null;digits(10);decimals(2)"`
+	Num         float64   `orm:"column(num);null;digits(10);decimals(2)" json:"Num,string"`
 	Station     string    `orm:"column(station);size(255);null"`
 	Location    string    `orm:"column(location);size(255);null"`
 	CreateTime  time.Time `orm:"column(create_time);type(datetime);null;auto_now_add"`
@@ -135,7 +135,8 @@ func UpdateLoadRecordById(m *LoadRecord) (err error) {
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Update(m); err == nil {
+		//注意！！！！！！！此处指更新指定的字段了！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+		if num, err = o.Update(m, "product_name", "num", "station"); err == nil {
 			fmt.Println("Number of records updated in database:", num)
 		}
 	}

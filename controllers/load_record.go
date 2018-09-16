@@ -136,6 +136,7 @@ func (c *LoadRecordController) GetAll() {
 // @Success 200 {object} models.LoadRecord
 // @Failure 403 :id is not int
 // @router /:id [put]
+//注意！！！！！！！此函数有修改，只更新指定的3个字段了！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 func (c *LoadRecordController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
