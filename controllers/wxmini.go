@@ -61,7 +61,7 @@ func (c *WXMiniFilterLoadRecordController) Get() {
 	}
 
 	if "" != describe {
-		qs = qs.Filter("station", describe)
+		qs = qs.Filter("describe", describe)
 	}
 	if "" != driver {
 		qs = qs.Filter("creator", driver)
@@ -73,7 +73,7 @@ func (c *WXMiniFilterLoadRecordController) Get() {
 		qs = qs.Filter("product_name", productName)
 	}
 
-	num, err := qs.All(&loadRecord)
+	num, err := qs.OrderBy("-create_time").All(&loadRecord)
 	fmt.Printf("Returned Rows Num: %s, %s", num, err)
 	/*
 	num, err := qs.ValuesList(&lists)
@@ -134,7 +134,7 @@ func (c *WXMiniLoginController) Get() {
 			role = "待审核"
 		}
 
-		c.Data["json"] = &LoginResult{respObj.Openid, role, "", ""}
+		c.Data["json"] = &LoginResult{respObj.Openid, role, "", "",""}
 		c.ServeJSON()
 		return
 	} else if err == orm.ErrMissPK {
@@ -159,7 +159,7 @@ func (c *WXMiniLoginController) Get() {
 			fmt.Println(err)
 		}
 		fmt.Println(pickerItemsJsonStr)
-		c.Data["json"] = &LoginResult{respObj.Openid, user.Role, user.Username, string(pickerItemsJsonStr)}
+		c.Data["json"] = &LoginResult{respObj.Openid, user.Role, user.Username, user.Describe,string(pickerItemsJsonStr)}
 		c.ServeJSON()
 	}
 }
@@ -289,6 +289,7 @@ type LoginResult struct {
 	Openid      string
 	Role        string
 	Username    string
+	Describe    string
 	PickerItems string
 }
 type LoginResponseBody struct {

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="myproject@101.201.71.156">
-  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.7">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.9">
     <root id="1">
+      <ServerVersion>5.7.10</ServerVersion>
+      <DefaultEngine>InnoDB</DefaultEngine>
+      <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
       <DefaultCasing>exact</DefaultCasing>
     </root>
     <schema id="2" parent="1" name="information_schema">
@@ -913,17 +916,11 @@
       <DefaultForCharset>0</DefaultForCharset>
     </collation>
     <table id="230" parent="3" name="apply">
-      <Engine>InnoDB</Engine>
       <Collation>utf8_general_ci</Collation>
     </table>
-    <table id="231" parent="3" name="inventory">
-      <Engine>InnoDB</Engine>
-    </table>
-    <table id="232" parent="3" name="load_record">
-      <Engine>InnoDB</Engine>
-    </table>
+    <table id="231" parent="3" name="inventory"/>
+    <table id="232" parent="3" name="load_record"/>
     <table id="233" parent="3" name="user">
-      <Engine>InnoDB</Engine>
       <Collation>utf8mb4_general_ci</Collation>
     </table>
     <column id="234" parent="230" name="apply_id">
@@ -1058,90 +1055,95 @@
       <DataType>varchar(128)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="258" parent="232" name="is_unload">
+    <column id="258" parent="232" name="describe">
       <Position>8</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="259" parent="232" name="is_unload">
+      <Position>9</Position>
       <DataType>int(1)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="259" parent="232" name="location2">
-      <Position>9</Position>
+    <column id="260" parent="232" name="location2">
+      <Position>10</Position>
       <DataType>varchar(255)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="260" parent="232" name="PRIMARY">
+    <key id="261" parent="232" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>load_record_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="261" parent="233" name="user_id">
+    <column id="262" parent="233" name="user_id">
       <Position>1</Position>
       <DataType>int(8)|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="262" parent="233" name="openid">
+    <column id="263" parent="233" name="openid">
       <Position>2</Position>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="263" parent="233" name="username">
+    <column id="264" parent="233" name="username">
       <Position>3</Position>
       <DataType>varchar(128)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="264" parent="233" name="avatar_url">
+    <column id="265" parent="233" name="avatar_url">
       <Position>4</Position>
       <DataType>varchar(255)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="265" parent="233" name="role">
+    <column id="266" parent="233" name="role">
       <Position>5</Position>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="266" parent="233" name="password">
+    <column id="267" parent="233" name="password">
       <Position>6</Position>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="267" parent="233" name="age">
+    <column id="268" parent="233" name="age">
       <Position>7</Position>
       <DataType>int(2)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="268" parent="233" name="tel">
+    <column id="269" parent="233" name="tel">
       <Position>8</Position>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="269" parent="233" name="company">
+    <column id="270" parent="233" name="company">
       <Position>9</Position>
       <DataType>varchar(128)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="270" parent="233" name="last_time">
+    <column id="271" parent="233" name="last_time">
       <Position>10</Position>
       <DataType>datetime|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="271" parent="233" name="create_time">
+    <column id="272" parent="233" name="create_time">
       <Position>11</Position>
       <DataType>datetime|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="272" parent="233" name="describe">
+    <column id="273" parent="233" name="describe">
       <Position>12</Position>
       <DataType>varchar(128)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="273" parent="233" name="nickname">
+    <column id="274" parent="233" name="nickname">
       <Position>13</Position>
       <DataType>varchar(128)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="274" parent="233" name="PRIMARY">
+    <key id="275" parent="233" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>user_id</ColNames>
       <Primary>1</Primary>

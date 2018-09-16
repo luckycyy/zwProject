@@ -18,6 +18,7 @@ type LoadRecord struct {
 	Location    string    `orm:"column(location);size(255);null"`
 	CreateTime  time.Time `orm:"column(create_time);type(datetime);null;auto_now_add"`
 	Creator     string    `orm:"column(creator);size(128);null"`
+	Describe     string   `orm:"column(describe);size(32);null"`
 	IsUnload    int       `orm:"column(is_unload);null"`
 	Location2   string    `orm:"column(location2);size(255);null"`
 }
