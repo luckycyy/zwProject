@@ -214,13 +214,20 @@ func (c *WXMiniLoadController) Post() {
 	if err == nil {
 		num, _ := res.RowsAffected()
 		fmt.Println("update minus inventory affected nums: ", num)
+		if num == 0{
+			c.Data["json"] = &CodeBody{"2"}//站点与产品不匹配
+		}else{
+			c.Data["json"] = &CodeBody{"1"}//成功
+		}
+	}else{
+		c.Data["json"] = &CodeBody{"err"}
 	}
 	//TODO 修改为原生语句 或者存入整型
 	//num, err := db.GetOrm().QueryTable("inventory").Filter("product_name",loadRecord.ProductName).Filter("station",loadRecord.Station).Update(orm.Params{
 	//	"num": orm.ColValue(orm.ColMinus, loadRecord.Num),
 	//})
 	//fmt.Println("影响num：", num)
-	c.Data["json"] = &CodeBody{"1"}
+
 	c.ServeJSON()
 
 }
