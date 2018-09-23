@@ -159,9 +159,9 @@ func (c *ApplyController) Put() {
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *ApplyController) Delete() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteApply(id); err == nil {
+	openidStr := c.Ctx.Input.Param(":id")
+	//id, _ := strconv.Atoi(idStr)
+	if err := models.DeleteApplyByOpenid(openidStr); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataSource name="myproject@101.201.71.156">
-  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.9">
+<dataSource name="myproject@39.105.74.138">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.7">
     <root id="1">
-      <ServerVersion>5.7.10</ServerVersion>
-      <DefaultEngine>InnoDB</DefaultEngine>
-      <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
       <DefaultCasing>exact</DefaultCasing>
     </root>
     <schema id="2" parent="1" name="information_schema">
@@ -916,11 +913,17 @@
       <DefaultForCharset>0</DefaultForCharset>
     </collation>
     <table id="230" parent="3" name="apply">
+      <Engine>InnoDB</Engine>
       <Collation>utf8_general_ci</Collation>
     </table>
-    <table id="231" parent="3" name="inventory"/>
-    <table id="232" parent="3" name="load_record"/>
+    <table id="231" parent="3" name="inventory">
+      <Engine>InnoDB</Engine>
+    </table>
+    <table id="232" parent="3" name="load_record">
+      <Engine>InnoDB</Engine>
+    </table>
     <table id="233" parent="3" name="user">
+      <Engine>InnoDB</Engine>
       <Collation>utf8mb4_general_ci</Collation>
     </table>
     <column id="234" parent="230" name="apply_id">

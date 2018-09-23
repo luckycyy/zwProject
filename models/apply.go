@@ -157,3 +157,13 @@ func DeleteApply(id int) (err error) {
 	}
 	return
 }
+
+// 根据openid删除
+func DeleteApplyByOpenid(openid string) (err error) {
+	o := orm.NewOrm()
+	if num, err := o.QueryTable("apply").Filter("openid", openid).Delete(); err == nil {
+		fmt.Println("delete apply ,Number of records deleted in database:", num)
+	}
+
+	return
+}
