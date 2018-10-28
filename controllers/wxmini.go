@@ -95,7 +95,7 @@ func (c *WXMiniLoginController) Get() {
 		fmt.Println("get code err")
 		return
 	}
-	resp, err := http.Get("https://api.weixin.qq.com/sns/jscode2session?appid=wxfe7815dd10b97a64&secret=242a3a1bbb058c3d95efcd14445dccac&js_code=" + code + "&grant_type=authorization_code")
+	resp, err := http.Get("https://api.weixin.qq.com/sns/jscode2session?appid=wx33f7a66e6bddc747&secret=bf8f5427ddcbbd4f40a5acd54d4dd881&js_code=" + code + "&grant_type=authorization_code")
 	if err != nil {
 		fmt.Println("get openid err")
 		fmt.Println(err)
